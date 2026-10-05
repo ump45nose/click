@@ -962,6 +962,17 @@ def test_custom_version_option_receives_context(runner):
     assert result.output == "mytool 1.0\n"
 
 
+def test_custom_version_option_in_resilient_parsing(runner):
+    @click.command()
+    @click.custom_version_option(lambda ctx: "custom 9.9.9", "-V", "--version")
+    def cli():
+        pass
+
+    result = runner.invoke(cli, ["--version"], resilient_parsing=True)
+    assert result.exit_code == 0
+    assert result.output == ""
+
+
 @pytest.mark.parametrize(
     ("nargs", "multiple", "default", "expect"),
     [
